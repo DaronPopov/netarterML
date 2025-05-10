@@ -39,12 +39,14 @@ class LLMAPI:
             print(f"Error loading model: {e}")
             return False
     
-    def chat(self, message):
+    def chat(self, message, max_length=2048, temperature=0.7, do_sample=True):
         """Generate a response for the given message.
         
         Args:
             message (str): The input message
-            
+            max_length (int, optional): Maximum length of generated text
+            temperature (float, optional): Sampling temperature
+            do_sample (bool, optional): Whether to use sampling
         Returns:
             str: The generated response
         """
@@ -54,10 +56,10 @@ class LLMAPI:
         inputs = self.tokenizer(message, return_tensors="pt").to(self.device)
         outputs = self.model.generate(
             **inputs,
-            max_length=2048,
+            max_length=max_length,
             num_return_sequences=1,
-            temperature=0.7,
-            do_sample=True
+            temperature=temperature,
+            do_sample=do_sample
         )
         response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
         return response 

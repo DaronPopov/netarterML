@@ -14,6 +14,8 @@ sys.path.insert(0, project_root)
 
 # Import after path setup
 from OPENtransformer.core.asm.kernels.transformer import Transformer as TransformerLayer
+from OPENtransformer.arm64_engine.core.c_inference.py_llm_interface import run_llm_inference
+from OPENtransformer.arm64_engine.core.asm.kernels.vision.vision_kernels_asm import VisionKernelsASM
 
 # API Key Management
 class APIKeyManager:
@@ -220,17 +222,19 @@ def convert_weights(
 class LLMAPI:
     """A unified API for loading, converting and using transformer models"""
     
-    def __init__(self, model_name: str, hf_token: Optional[str] = None):
+    def __init__(self, model_name: str, hf_token: Optional[str] = None, use_simd: bool = False):
         """
         Initialize the LLM API with a model name and optional HuggingFace token
         
         Args:
             model_name: Name of the model to load (e.g. "TinyLlama/TinyLlama-1.1B-Chat-v1.0")
             hf_token: Optional HuggingFace token for authentication
+            use_simd: Whether to use SIMD optimizations
         """
         self.model_name = model_name
         self.start_time = None
         self.token_count = 0
+        self.use_simd = use_simd
         
         # Use provided token or get from API key manager
         if hf_token:
@@ -245,6 +249,16 @@ class LLMAPI:
         self.tokenizer = None
         self.conversation_history = []
         self.device = None
+        
+        # Initialize SIMD components if enabled
+        if self.use_simd:
+            try:
+                self.simd_kernels = VisionKernelsASM()
+                print("SIMD kernels initialized successfully!")
+            except Exception as e:
+                print(f"Warning: Failed to initialize SIMD kernels: {e}")
+                print("Falling back to standard implementation...")
+                self.use_simd = False
     
     def _update_tps_display(self, new_tokens: int = 1):
         """Update and display the current TPS rate"""
@@ -268,9 +282,21 @@ class LLMAPI:
             # Restore cursor position
             print("\033[u", end="", flush=True)
 
-    def load_model(self, device_map: str = "auto", torch_dtype: torch.dtype = torch.float16) -> None:
+    def load_model(self, device_map: str = "auto", torch_dtype: torch.dtype = torch.float16, use_simd: bool = False) -> None:
         """Load the model and tokenizer"""
         print(f"Loading {self.model_name}...")
+        
+        # Update SIMD flag if provided
+        if use_simd:
+            self.use_simd = use_simd
+            if not hasattr(self, 'simd_kernels'):
+                try:
+                    self.simd_kernels = VisionKernelsASM()
+                    print("SIMD kernels initialized successfully!")
+                except Exception as e:
+                    print(f"Warning: Failed to initialize SIMD kernels: {e}")
+                    print("Falling back to standard implementation...")
+                    self.use_simd = False
         
         # Load tokenizer with English language settings
         self.tokenizer = AutoTokenizer.from_pretrained(
@@ -346,7 +372,33 @@ class LLMAPI:
         # Prepare input with English chat format
         prompt = f"User: {message}\nAssistant:"
         
-        # Tokenize input
+        # Use SIMD-optimized inference if enabled
+        if self.use_simd:
+            try:
+                # Convert model to SIMD format
+                model_path = os.path.join(os.path.dirname(self.model_name), "simd_model")
+                if not os.path.exists(model_path):
+                    os.makedirs(model_path, exist_ok=True)
+                
+                # Run inference using SIMD backend
+                response = run_llm_inference(
+                    model_path=model_path,
+                    prompt=prompt,
+                    max_new_tokens=max_new_tokens,
+                    temperature=temperature,
+                    top_p=top_p,
+                    use_simd=True,
+                    use_memory_optimizations=True
+                )
+                
+                if response:
+                    return response.split("Assistant:")[-1].strip()
+                
+            except Exception as e:
+                print(f"Warning: SIMD inference failed: {e}")
+                print("Falling back to standard inference...")
+        
+        # Standard inference path
         inputs = self.tokenizer(
             prompt,
             return_tensors="pt",

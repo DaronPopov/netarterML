@@ -1,3 +1,13 @@
+# Model files and downloads
+*.bin
+*.pt
+*.pth
+*.onnx
+*.safetensors
+temp_fp16_model/
+models/
+downloads/
+
 # Python
 __pycache__/
 *.py[cod]
@@ -20,50 +30,20 @@ wheels/
 .installed.cfg
 *.egg
 
-# Virtual Environment
+# Environment
+.env
+.venv
+env/
 venv/
 ENV/
-env/
-.env
+env.bak/
+venv.bak/
 
 # IDE
 .idea/
 .vscode/
 *.swp
 *.swo
-
-# Model files
-*.ckpt
-*.safetensors
-*.bin
-*.pt
-*.pth
-*.onnx
-*.h5
-*.hdf5
-*.pb
-*.tflite
-*.mlmodel
-*.mlpackage
-models/
-model_files/
-checkpoints/
-weights/
-*.weights
-*.model
-*.model.*
-
-# Output files
-output/
-outputs/
-*.png
-*.jpg
-*.jpeg
-*.gif
-
-# Logs
-*.log
-logs/
 
 # OS
 .DS_Store
