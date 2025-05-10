@@ -18,14 +18,6 @@ from typing import Optional, Dict, List, Tuple, Union, Any
 # Add the current directory to the Python path to ensure imports work
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-# Try to import the diffusion interface
-try:
-    from py_diffusion_interface import run_inference
-    print("Successfully imported py_diffusion_interface")
-except ImportError as e:
-    print(f"Error importing py_diffusion_interface: {e}")
-    sys.exit(1)
-
 class DiffusionModel:
     """Class representing a loaded diffusion model"""
     
@@ -218,6 +210,13 @@ class EasyDiffusionAPI:
         Returns:
             Tuple of (width, height, channels, image_data) or None if failed
         """
+        try:
+            from py_diffusion_interface import run_inference
+        except ImportError as e:
+            print(f"Error importing py_diffusion_interface: {e}")
+            print("This function requires the C/ASM backend. Please ensure it is installed and available.")
+            return None
+        
         # Determine which model to use
         model = None
         if model_id is not None:

@@ -1,8 +1,0 @@
-{
-  "models": {
-    "sd-v1-5": {
-      "path": "runwayml/stable-diffusion-v1-5"
-    }
-  },
-  "active_model": "sd-v1-5"
-}

@@ -1,130 +1,139 @@
-# OPENtransformer
+# Local AI Engine Examples
 
-A powerful transformer-based machine learning framework with optimized inference engines for various tasks including diffusion models, vision transformers, and LLMs.
+This directory contains runnable examples for using various AI models and capabilities through the Local AI Engine. Follow these instructions to ensure all examples and tests work smoothly.
 
-## Quick Start
+## One-Command Quick Start
 
-1. Clone the repository:
+Copy and paste this block into your terminal to set up and verify your environment:
+
 ```bash
-git clone https://github.com/DaronPopov/netarterML.git
-cd netarterML
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Set your Hugging Face token (replace with your actual token)
+export HF_TOKEN=your_token_here
+
+# 3. Set the Python path for core inference modules
+export PYTHONPATH=OPENtransformer/arm64_engine/core/c_inference
+
+# 4. Run the system check to verify all imports and readiness
+python tests/test_vision_download.py
 ```
 
-2. Create and activate a virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows use: venv\Scripts\activate
-```
+If you see all ✓ messages and no errors, your environment is ready for model downloading and inference!
 
-3. Install dependencies:
+---
+
+## One-Command Quick Start for Each Modality
+
+After verifying your environment, you can run a full quick start for each modality with a single copy-paste command block:
+
+### Diffusion (Image Generation)
 ```bash
 pip install -r requirements.txt
+export HF_TOKEN=your_token_here
+export PYTHONPATH=OPENtransformer/arm64_engine/core/c_inference
+python examples/diffusion/easy_diffusion_example.py
 ```
 
-4. Set up your Hugging Face token (required for model downloads):
+### Vision (Image Classification, Captioning, etc.)
 ```bash
-export HF_TOKEN=your_token_here  # On Windows use: set HF_TOKEN=your_token_here
+pip install -r requirements.txt
+export HF_TOKEN=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
+export PYTHONPATH=OPENtransformer/arm64_engine/core/c_inference
+python examples/vision/vision_api.py
 ```
 
-## Model Downloads
-
-The framework supports various models that can be downloaded as needed:
-
-### Diffusion Models
+### Chat (Language Model Conversation)
 ```bash
-# Download Stable Diffusion v1.5
-python OPENtransformer/arm64_engine/core/c_inference/download_model.py
-
-# Download Dreamlike PhotoReal 2.0
-python OPENtransformer/arm64_engine/core/c_inference/download_realistic.py
-
-# Download Dreamshaper
-python OPENtransformer/arm64_engine/core/c_inference/download_dreamshaper.py
-
-# Download Stable Diffusion v2
-python OPENtransformer/arm64_engine/core/c_inference/download_sdv2.py
+pip install -r requirements.txt
+export HF_TOKEN=your_token_here
+export PYTHONPATH=OPENtransformer/arm64_engine/core/c_inference
+python examples/chat/tinyllama_chat.py
 ```
 
-### Vision Models
+### Multimodal (Vision + Language)
 ```bash
-# Download vision model weights
-python OPENtransformer/vision/download_weights.py
+pip install -r requirements.txt
+export HF_TOKEN=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
+export PYTHONPATH=OPENtransformer/arm64_engine/core/c_inference
+python examples/multimodal/multimodal_pipeline.py
 ```
 
-### LLM Models
+---
+
+## Directory Structure
+
+- `diffusion/`: Image generation using diffusion models
+- `chat/`: Text generation and conversation using language models
+- `multimodal/`: Vision and language model combinations
+- `vision/`: Vision-only tasks (e.g., classification, captioning)
+
+## Quick Setup
+
+1. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. **Set your Hugging Face token as an environment variable:**
+   ```bash
+   export HF_TOKEN=your_token_here
+   ```
+3. **Set the Python path for examples that require core inference modules:**
+   ```bash
+   export PYTHONPATH=OPENtransformer/arm64_engine/core/c_inference
+   ```
+
+## Running Example Scripts
+
+- **Diffusion Example:**
+  ```bash
+  python examples/diffusion/easy_diffusion_example.py
+  ```
+- **Vision Example:**
+  ```bash
+  python examples/vision/vision_api.py
+  ```
+- **Chat Example:**
+  ```bash
+  python examples/chat/tinyllama_chat.py
+  ```
+- **Multimodal Example:**
+  ```bash
+  python examples/multimodal/multimodal_pipeline.py
+  ```
+
+> **Tip:** Always ensure you have set the `PYTHONPATH` as above before running any example that depends on custom C/C++/Python modules in `OPENtransformer/arm64_engine/core/c_inference`.
+
+## Running Tests
+
+To verify your installation and imports, you can run the provided test scripts:
+
 ```bash
-# Download LLM weights
-python OPENtransformer/chat/download_weights.py
+python tests/test_vision_download.py
 ```
 
-## Usage Examples
+This script checks that all major modules (diffusion, vision, chat, core kernels) can be imported and initialized.
 
-### Image Generation
-```python
-from OPENtransformer.diffusion.easy_diffusion_api import EasyDiffusionAPI
+## Troubleshooting
 
-# Initialize API
-api = EasyDiffusionAPI()
+- **ImportError: No module named 'py_diffusion_interface'**
+  - Make sure you have set the `PYTHONPATH` as shown above.
+- **Hugging Face Token Errors**
+  - Ensure you have set your `HF_TOKEN` environment variable with a valid token.
+- **Missing dependencies**
+  - Run `pip install -r requirements.txt` again to ensure all dependencies are installed.
+- **GPU/CPU Warnings**
+  - Some warnings (e.g., bitsandbytes, CUDA) are informational and do not prevent CPU-based inference.
 
-# Generate an image
-result = api.generate_image(
-    prompt="Your prompt here",
-    steps=25,
-    guidance=7.5,
-    output_path="output.png"
-)
-```
+## Best Practices
 
-### Vision Tasks
-```python
-from OPENtransformer.vision.easy_image import EasyVisionAPI
-
-# Initialize API
-api = EasyVisionAPI()
-
-# Process an image
-result = api.process_image("input.jpg")
-```
-
-### LLM Chat
-```python
-from OPENtransformer.chat.llm_api import LLMAPI
-
-# Initialize API
-api = LLMAPI()
-
-# Generate response
-response = api.generate("Your prompt here")
-```
-
-## Development Setup
-
-For development work:
-
-1. Install development dependencies:
-```bash
-pip install -r requirements-dev.txt
-```
-
-2. Run tests:
-```bash
-./scripts/run_tests.sh
-```
-
-## Project Structure
-
-- `OPENtransformer/` - Main package directory
-  - `arm64_engine/` - Optimized inference engine
-  - `chat/` - LLM and chat functionality
-  - `diffusion/` - Image generation models
-  - `vision/` - Computer vision models
-  - `core/` - Core transformer implementations
-  - `ui/` - User interface components
+- Use appropriate model size for your hardware
+- Monitor resource usage
+- Implement proper error handling
+- Use system prompts when available
+- Follow model-specific guidelines
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](docs/contributing.md) for details on our code of conduct and the process for submitting pull requests.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](docs/test_and_deps/LICENSE.txt) file for details. 
+Feel free to contribute new examples or improve existing ones. Please follow the established patterns and include proper documentation. 
