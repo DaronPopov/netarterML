@@ -9,20 +9,24 @@ show_help() {
     echo "Usage: $0 [demo_type] [options]"
     echo
     echo "Available demos:"
-    echo "  generate    - Image generation demo"
+    echo "  chat        - Language chat demo (LLM)"
     echo "  medical     - Medical imaging analysis demo"
-    echo "  chat        - Language chat demo"
-    echo "  webcam      - Webcam captioning demo"
-    echo "  code        - Code generation demo"
+    echo "  vision      - Vision API demo (image classification)"
+    echo "  generate    - Image generation demo (diffusion)"
+    echo "  diffusion   - Standard diffusion image generation demo"
+    echo "  simple-diffusion    - Simple diffusion image generation demo"
     echo
     echo "Options:"
-    echo "  --offline   - Run in offline mode"
+    echo "  --offline   - Run in offline mode (if supported)"
     echo "  --help      - Show this help message"
     echo
     echo "Examples:"
-    echo "  $0 generate --prompt \"your prompt\" --offline"
-    echo "  $0 medical --image path/to/image.jpg"
-    echo "  $0 webcam --offline"
+    echo "  $0 chat"
+    echo "  $0 medical"
+    echo "  $0 vision"
+    echo "  $0 generate --prompt \"your prompt\""
+    echo "  $0 diffusion"
+    echo "  $0 simple-diffusion --prompt \"your prompt\""
 }
 
 # Function to run Python script with proper path
@@ -42,20 +46,23 @@ DEMO_TYPE="$1"
 shift
 
 case "$DEMO_TYPE" in
-    "generate")
-        run_python_script "examples/vision/multimodal_pipeline.py" "$@"
+    "chat")
+        run_python_script "examples/chat/llm_chat_example.py" "$@"
         ;;
     "medical")
-        run_python_script "examples/medical/medical_analysis.py" "$@"
+        run_python_script "examples/multimodal/multimodal_analysis.py" "$@"
         ;;
-    "chat")
-        run_python_script "examples/chat/chat_interface.py" "$@"
+    "vision")
+        run_python_script "examples/vision/vision_api.py" "$@"
         ;;
-    "webcam")
-        run_python_script "examples/vision/webcam_caption.py" "$@"
+    "generate")
+        run_python_script "examples/multimodal/multimodal_pipeline.py" "$@"
         ;;
-    "code")
-        run_python_script "examples/code/code_generator.py" "$@"
+    "diffusion")
+        run_python_script "examples/diffusion/easy_diffusion_example.py" "$@"
+        ;;
+    "simple-diffusion")
+        run_python_script "examples/diffusion/simple_diffusion.py" "$@"
         ;;
     "--help"|"-h")
         show_help
