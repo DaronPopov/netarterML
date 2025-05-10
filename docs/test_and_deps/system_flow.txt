@@ -1,0 +1,159 @@
+OPENtransformer System Flow
+=========================
+
+
+1. Entry Points
+--------------
+[User Input] --> [CLI Interface] --> [Model Selection]
+     |               |                   |
+     v               v                   v
+[run_chat.py]    [cli.py]         [download_models.py]
+     |               |                   |
+     v               v                   v
+[Model Loading] <-- [Model Converter] <-- [Model Download]
+     |               |                   |
+     v               v                   v
+[model_loader.py] [converter.py]    [download_models.py]
+
+2. Model Loading Flow
+--------------------
+[Model Source] --> [Model Converter] --> [Architecture Adapter] --> [Fused Transformer]
+     |                   |                       |                       |
+     v                   v                       v                       v
+[PyTorch Model] --> [Weight Extraction] --> [Weight Adaptation] --> [ASM Kernels]
+     |                   |                       |                       |
+     v                   v                       v                       v
+[.pt/.pth]         [State Dict]             [Format Conversion]     [Execution]
+     |                   |                       |                       |
+     v                   v                       v                       v
+[converter.py]     [loader.py]             [architecture_adapter.py] [fused_transformer_op.py]
+
+3. Core Components
+-----------------
+[Transformer Core] --> [Vision Processing] --> [Model Conversion] --> [API Integration]
+     |                       |                       |                       |
+     v                       v                       v                       v
+[ASM Kernels]         [Vision Kernels]         [Converter]             [APIs]
+     |                       |                       |                       |
+     v                       v                       v                       v
+[Optimized Ops]       [Image Processing]       [Format Adapter]        [External Services]
+     |                       |                       |                       |
+     v                       v                       v                       v
+[transformer.py]     [vision_kernels_asm.py]  [converter.py]          [stocks_api.py]
+
+4. Execution Paths
+-----------------
+a) Chat/LLM Path:
+[User Input] --> [Tokenization] --> [Transformer] --> [Generation] --> [Output]
+     |               |                   |               |               |
+     v               v                   v               v               v
+[Text]          [Token IDs]         [Embeddings]    [Logits]        [Text]
+     |               |                   |               |               |
+     v               v                   v               v               v
+[chat_with_tinyllama.py] [tokenizer.py] [transformer.py] [generation.py] [output.py]
+
+b) Vision Path:
+[Image Input] --> [Patch Embedding] --> [Vision Transformer] --> [Classification/Detection]
+     |                   |                       |                       |
+     v                   v                       v                       v
+[Image]             [Patches]               [Features]              [Results]
+     |                   |                       |                       |
+     v                   v                       v                       v
+[easy_image.py]    [patch_embedding.py]    [vision_transformer.py] [vision_kernels_asm.py]
+
+c) Model Conversion Path:
+[Source Model] --> [Weight Extraction] --> [Format Conversion] --> [Optimized Model]
+     |                   |                       |                       |
+     v                   v                       v                       v
+[Original]          [Weights]               [Adaptation]            [Fused Format]
+     |                   |                       |                       |
+     v                   v                       v                       v
+[huggingface_converter.py] [loader.py]      [architecture_adapter.py] [fused_transformer_op.py]
+
+5. Key Components
+----------------
+a) Model Loading:
+   - HuggingFaceConverter: OPENtransformer/arm64_engine/core/model_converter/huggingface_converter.py
+   - ModelConverter: OPENtransformer/arm64_engine/core/model_converter/converter.py
+   - ArchitectureAdapter: OPENtransformer/arm64_engine/core/model_converter/architecture_adapter.py
+
+b) Core Processing:
+   - ASM Kernels: OPENtransformer/arm64_engine/core/asm/kernels/
+   - Vision Kernels: OPENtransformer/arm64_engine/core/asm/kernels/vision/
+   - Transformer Kernels: OPENtransformer/arm64_engine/core/asm/kernels/transformer/
+
+c) APIs and Integration:
+   - Finance API: OPENtransformer/arm64_engine/core/APIS/finance_api.py
+   - Vision API: OPENtransformer/arm64_engine/core/asm/kernels/vision/
+   - LLM API: OPENtransformer/llm_api.py
+
+6. Data Flow
+-----------
+[Input Data] --> [Preprocessing] --> [Model Processing] --> [Postprocessing] --> [Output]
+     |               |                   |                       |               |
+     v               v                   v                       v               v
+[Raw Data]      [Normalized]        [Features]              [Results]        [Formatted]
+     |               |                   |                       |               |
+     v               v                   v                       v               v
+[input.py]      [preprocessing.py]   [model_processing.py]   [postprocessing.py] [output.py]
+
+7. Optimization Path
+-------------------
+[Original Model] --> [Weight Quantization] --> [Fused Operations] --> [ASM Optimization]
+     |                       |                       |                       |
+     v                       v                       v                       v
+[Full Precision]        [4/8-bit]              [Fused Kernels]         [Assembly]
+     |                       |                       |                       |
+     v                       v                       v                       v
+[model.py]              [quantize_4bit.py]     [fused_transformer_op.py] [asm_kernels.c]
+
+8. Offline Weight Support
+------------------------
+The system can handle various offline weight formats:
+
+a) Supported Weight Formats:
+   - PyTorch (.pt/.pth)
+   - HuggingFace (.bin)
+   - NumPy (.npz)
+   - Custom JSON
+   - Raw binary
+
+b) Weight Loading Methods:
+   - Direct loading from file
+   - Memory-mapped loading for large files
+   - Streaming loading for very large models
+   - Partial loading for specific layers
+
+c) Weight Conversion Capabilities:
+   - Format conversion (e.g., PyTorch to NumPy)
+   - Precision conversion (FP32, FP16, INT8, INT4)
+   - Architecture adaptation
+   - Weight pruning and quantization
+
+d) Offline Processing Features:
+   - Batch weight processing
+   - Parallel weight conversion
+   - Weight validation and verification
+   - Automatic format detection
+   - Error recovery and checkpointing
+
+Note: This flow chart represents the main execution paths and components of the system.
+Each path can be used independently or in combination depending on the use case.
+
+File Structure:
+--------------
+OPENtransformer/
+├── arm64_engine/
+│   ├── core/
+│   │   ├── APIS/
+│   │   ├── asm/
+│   │   │   ├── kernels/
+│   │   │   │   ├── transformer/
+│   │   │   │   ├── vision/
+│   │   │   │   └── ...
+│   │   │   └── ...
+│   │   └── model_converter/
+│   └── ...
+├── llm_api.py
+├── chat_with_tinyllama.py
+└── ... 

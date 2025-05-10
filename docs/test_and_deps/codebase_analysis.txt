@@ -1,0 +1,132 @@
+Codebase Analysis Report
+=====================
+
+Lines of Code (LOC) Analysis
+---------------------------
+Total lines of code: 27,032 lines
+Number of Python files: 120 files
+
+Top 10 Largest Files by LOC:
+1. transformer.py (1,657 lines)
+2. stocks_api.py (1,650 lines)
+3. fused_transformer_op.py (1,171 lines)
+4. fixed_tokenizer_kernel.py (1,013 lines)
+5. vision_kernels_asm.py (793 lines)
+6. attention_backprop.py (727 lines)
+7. diffusion_kernels_asm.py (649 lines)
+8. builder.py (574 lines)
+9. transformer/transformer.py (486 lines)
+10. webcam_caption.py (479 lines)
+
+File Size Analysis
+-----------------
+Total size: ~100MB
+
+Largest Files by Size:
+1. best_model.pth (94MB)
+2. generated_images/test_diffusion_0.png (639KB)
+3. OPENtransformer/generated_images/generated_image_1.png (512KB)
+4. generated_images/generated_image_1.png (507KB)
+5. OPENtransformer/generated_images/generated_image_2.png (457KB)
+
+Core Python Files (10KB+):
+1. transformer.py (74KB)
+2. stocks_api.py (67KB)
+3. fused_transformer_op.py (41KB)
+4. fixed_tokenizer_kernel.py (34KB)
+5. attention_backprop.py (26KB)
+6. diffusion_kernels_asm.py (25KB)
+7. builder.py (24KB)
+8. vision_kernels_asm.py (24KB)
+9. architecture_adapter.py (22KB)
+10. webcam_caption.py (19KB)
+
+Codebase Size Without Models and Generated Files
+----------------------------------------------
+Total size of source code only: ~20KB
+This includes:
+- All Python source files
+- Configuration files
+- Shell scripts
+- Documentation files
+- Dependencies listed in requirements.txt
+
+Dependency Sizes (Approximate):
+1. PyTorch ecosystem:
+   - torch: ~2GB
+   - torchvision: ~500MB
+   - transformers: ~500MB
+
+2. Image Processing:
+   - Pillow: ~50MB
+   - opencv-python: ~100MB
+
+3. Machine Learning:
+   - numpy: ~100MB
+   - accelerate: ~50MB
+   - einops: ~10MB
+   - datasets: ~200MB
+   - diffusers: ~300MB
+
+4. Audio Processing:
+   - librosa: ~50MB
+   - soundfile: ~20MB
+
+5. Utilities:
+   - ftfy: ~5MB
+   - regex: ~5MB
+   - tqdm: ~5MB
+   - huggingface-hub: ~50MB
+   - requests: ~5MB
+   - python-dotenv: ~1MB
+
+Total Size with Dependencies: ~4.5GB
+
+Note: This analysis excludes:
+- Downloaded models (*.pth files)
+- Generated images (*.png, *.jpg files)
+- Virtual environment files
+- Cache files
+- Downloaded transformers
+- Node modules
+
+Project Structure
+----------------
+Main components:
+- Core transformer implementations
+- Vision processing
+- Model conversion
+- API integrations
+- Testing and demos
+
+Dependencies
+-----------
+1. PyTorch ecosystem:
+   - torch>=2.0.0
+   - torchvision>=0.15.0
+   - transformers>=4.30.0
+
+2. Image Processing:
+   - Pillow>=9.0.0
+   - opencv-python>=4.8.0
+
+3. Machine Learning:
+   - numpy>=1.24.0
+   - accelerate>=0.27.0
+   - einops>=0.7.0
+   - datasets>=2.12.0
+   - diffusers>=0.24.0
+
+4. Audio Processing:
+   - librosa>=0.8.1
+   - soundfile>=0.12.1
+
+5. Utilities:
+   - ftfy>=6.0.3
+   - regex>=2021.8.3
+   - tqdm>=4.62.2
+   - huggingface-hub>=0.16.0
+   - requests>=2.31.0
+   - python-dotenv>=1.0.0
+
+Note: This analysis excludes downloaded models, transformers, and generated files. 

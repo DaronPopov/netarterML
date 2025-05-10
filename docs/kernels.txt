@@ -1,0 +1,140 @@
+OPENtransformer ASM Kernels
+=========================
+
+1. Transformer Kernels
+--------------------
+a) Matrix Multiplication (matrix_mul.asm)
+   - Purpose: Optimized matrix multiplication for transformer layers
+   - Features:
+     * SIMD vectorization for parallel processing
+     * Fused multiply-add operations
+     * Cache-friendly memory access patterns
+     * Support for different matrix dimensions
+
+b) Attention Mechanism (attention.asm)
+   - Purpose: Implements self-attention computation
+   - Features:
+     * Query-Key-Value matrix operations
+     * Softmax computation with numerical stability
+     * Scaled dot-product attention
+     * Masking support for causal attention
+
+c) Layer Normalization (layer_norm.asm)
+   - Purpose: Normalizes layer outputs
+   - Features:
+     * Mean and variance computation
+     * Scale and shift operations
+     * Numerical stability handling
+     * Batch processing support
+
+2. Vision Kernels
+---------------
+a) Image Processing (image_processing.asm)
+   - Purpose: Optimized image operations
+   - Features:
+     * Pixel-level operations
+     * Color space conversions
+     * Image resizing and cropping
+     * Filter applications
+
+b) Feature Extraction (feature_extraction.asm)
+   - Purpose: Extracts visual features from images
+   - Features:
+     * Convolution operations
+     * Pooling operations
+     * Feature map generation
+     * Spatial attention
+
+3. Medical Imaging Kernels
+------------------------
+a) X-ray Processing (xray_processing.asm)
+   - Purpose: Specialized X-ray image processing
+   - Features:
+     * Contrast enhancement
+     * Noise reduction
+     * Region of interest detection
+     * Feature extraction for medical analysis
+
+b) Cancer Detection (cancer_detection.asm)
+   - Purpose: Optimized cancer detection algorithms
+   - Features:
+     * Tumor region detection
+     * Feature analysis
+     * Classification support
+     * Batch processing for multiple regions
+
+4. Optimization Kernels
+---------------------
+a) Memory Management (memory_ops.asm)
+   - Purpose: Optimized memory operations
+   - Features:
+     * Cache-friendly data access
+     * Memory alignment
+     * Zero-copy operations
+     * Memory pooling
+
+b) Parallel Processing (parallel_ops.asm)
+   - Purpose: Parallel computation support
+   - Features:
+     * Thread synchronization
+     * Work distribution
+     * Load balancing
+     * Resource management
+
+5. Utility Kernels
+----------------
+a) Data Conversion (data_conversion.asm)
+   - Purpose: Optimized data type conversions
+   - Features:
+     * Float to integer conversion
+     * Quantization operations
+     * Dequantization operations
+     * Format conversion
+
+b) Mathematical Operations (math_ops.asm)
+   - Purpose: Basic mathematical operations
+   - Features:
+     * Trigonometric functions
+     * Exponential operations
+     * Logarithmic operations
+     * Statistical functions
+
+6. Kernel Integration
+-------------------
+a) Fused Operations (fused_ops.asm)
+   - Purpose: Combines multiple operations
+   - Features:
+     * Operation fusion
+     * Memory access optimization
+     * Pipeline optimization
+     * Resource sharing
+
+b) Kernel Management (kernel_manager.asm)
+   - Purpose: Manages kernel execution
+   - Features:
+     * Kernel scheduling
+     * Resource allocation
+     * Error handling
+     * Performance monitoring
+
+7. Performance Features
+---------------------
+a) SIMD Optimization
+   - Vectorized operations
+   - Parallel data processing
+   - Reduced instruction count
+   - Improved cache utilization
+
+b) Memory Optimization
+   - Cache-friendly access patterns
+   - Memory alignment
+   - Zero-copy operations
+   - Memory pooling
+
+c) Pipeline Optimization
+   - Operation fusion
+   - Resource sharing
+   - Load balancing
+   - Thread synchronization
+
+Note: These kernels are implemented in assembly language for maximum performance on ARM64 architecture. They are designed to work together in a modular way, allowing for flexible combination of different operations while maintaining high performance. The kernels are optimized for both single-threaded and multi-threaded execution, with careful consideration for memory access patterns and cache utilization. 

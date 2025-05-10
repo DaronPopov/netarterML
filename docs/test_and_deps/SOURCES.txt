@@ -1,0 +1,8 @@
+README.md
+setup.py
+src/OPENtransformer.egg-info/PKG-INFO
+src/OPENtransformer.egg-info/SOURCES.txt
+src/OPENtransformer.egg-info/dependency_links.txt
+src/OPENtransformer.egg-info/entry_points.txt
+src/OPENtransformer.egg-info/requires.txt
+src/OPENtransformer.egg-info/top_level.txt

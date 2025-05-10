@@ -1,0 +1,145 @@
+OPENtransformer Execution Flow
+============================
+
+1. Entry Points and Initialization
+--------------------------------
+[User Input] → [CLI Interface (cli.py)]
+     ↓
+[Environment Setup (load_env.sh)]
+     ↓
+[Model Selection & Download (download_models.py)]
+     ↓
+[Model Loading (model_loader.py)]
+
+2. Core Processing Pipeline
+-------------------------
+[Input Layer]
+     ↓
+[Preprocessing (preprocessing.py)]
+     ↓
+[Model Pipeline]
+     ↓
+[Postprocessing (postprocessing.py)]
+     ↓
+[Output Layer]
+
+3. Model Processing Flows
+------------------------
+a) Language Processing:
+   [User Input] → [Tokenization (tokenizer.py)]
+        ↓
+   [Transformer (transformer.py)]
+        ↓
+   [Generation (generation.py)]
+        ↓
+   [Output (output.py)]
+
+b) Vision Processing:
+   [Image Input] → [Patch Embedding (patch_embedding.py)]
+        ↓
+   [Vision Transformer (vision_transformer.py)]
+        ↓
+   [ASM Kernels (vision_kernels_asm.py)]
+        ↓
+   [Output Processing]
+
+c) Medical Imaging:
+   [X-ray Input] → [Image Preprocessing]
+        ↓
+   [ViT Model (vit-xray-pneumonia)]
+        ↓
+   [Analysis Pipeline]
+        ↓
+   [Result Generation]
+
+4. Model Management Flow
+-----------------------
+[Model Source] → [Converter (converter.py)]
+     ↓
+[Architecture Adapter (architecture_adapter.py)]
+     ↓
+[Weight Extraction (loader.py)]
+     ↓
+[Format Conversion]
+     ↓
+[Optimized Model Storage]
+
+5. Component Dependencies
+------------------------
+a) Core Dependencies:
+   - transformer.py → tokenizer.py
+   - vision_transformer.py → patch_embedding.py
+   - model_loader.py → converter.py
+   - fused_transformer_op.py → asm_kernels.c
+
+b) API Dependencies:
+   - llm_api.py → transformer.py
+   - vision_api.py → vision_transformer.py
+   - finance_api.py → external services
+
+6. Execution Paths
+-----------------
+a) Online Mode:
+   [User] → [API Token] → [HuggingFace API] → [Model Download] → [Processing]
+
+b) Offline Mode:
+   [User] → [Local Models] → [Processing] → [Output]
+
+7. Data Flow
+-----------
+[Input Data] → [Preprocessing]
+     ↓
+[Feature Extraction]
+     ↓
+[Model Processing]
+     ↓
+[Result Generation]
+     ↓
+[Output Formatting]
+
+8. Optimization Path
+-------------------
+[Original Model] → [Weight Quantization]
+     ↓
+[Fused Operations]
+     ↓
+[ASM Optimization]
+     ↓
+[Hardware Acceleration]
+
+9. File Structure and Imports
+----------------------------
+OPENtransformer/
+├── arm64_engine/
+│   ├── core/
+│   │   ├── APIS/
+│   │   │   ├── finance_api.py
+│   │   │   └── vision_api.py
+│   │   ├── asm/
+│   │   │   ├── kernels/
+│   │   │   │   ├── transformer/
+│   │   │   │   └── vision/
+│   │   │   └── asm_kernels.c
+│   │   └── model_converter/
+│   │       ├── converter.py
+│   │       └── architecture_adapter.py
+│   └── model_loader.py
+├── llm_api.py
+├── chat_with_tinyllama.py
+└── download_models.py
+
+10. Key Execution Sequences
+--------------------------
+a) Model Loading:
+   download_models.py → model_loader.py → converter.py → architecture_adapter.py
+
+b) Vision Processing:
+   vision_api.py → vision_transformer.py → patch_embedding.py → vision_kernels_asm.py
+
+c) Language Processing:
+   llm_api.py → transformer.py → tokenizer.py → generation.py
+
+d) Medical Analysis:
+   medical_imaging.py → vit-xray-pneumonia → analysis_pipeline.py → results.py
+
+Note: This flow represents the technical execution paths and component relationships within the OPENtransformer system. Each path can be executed independently or in combination depending on the use case. 

@@ -1,0 +1,20 @@
+{
+  "models": {
+    "sd-v1-5": {
+      "path": "runwayml/stable-diffusion-v1-5"
+    },
+    "dreamlike-photoreal": {
+      "path": "dreamlike-art/dreamlike-photoreal-2.0"
+    },
+    "sdxl-base": {
+      "path": "stabilityai/stable-diffusion-xl-base-1.0"
+    },
+    "dreamshaper-xl": {
+      "path": "lykon/dreamshaper-xl-1-0"
+    },
+    "dreamshaper-xl-lightning": {
+      "path": "Lykon/dreamshaper-xl-lightning"
+    }
+  },
+  "active_model": "dreamshaper-xl-lightning"
+}

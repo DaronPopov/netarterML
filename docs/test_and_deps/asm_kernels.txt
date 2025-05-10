@@ -1,0 +1,100 @@
+OPENtransformer ASM Kernels
+=========================
+
+1. Transformer Kernels
+--------------------
+a) Core Transformer Operations
+   - transformer.py: Main transformer implementation
+   - transformer_forward.py: Forward pass operations
+   - transformer_tokenizer.py: Tokenization operations
+   - fused_transformer_op.py: Fused transformer operations
+
+b) Attention Operations
+   - attention_matmul.py: Attention matrix multiplication
+   - attention_backprop.py: Attention backpropagation
+   - kv_cache_update.py: Key-Value cache management
+
+c) Layer Operations
+   - layer_norm.py: Layer normalization
+   - rmsnorm.py: Root mean square normalization
+   - feed_forward.py: Feed-forward network operations
+   - dropout.py: Dropout operations
+
+2. Vision Kernels
+---------------
+a) Vision Transformer
+   - vision/vision_transformer.py: Vision transformer implementation
+   - vision/vision_transformer_simd.py: SIMD-optimized vision transformer
+   - vision/vision_kernels_asm.py: Assembly-optimized vision operations
+
+b) Image Processing
+   - vision/vision_kernels.c: C-implemented vision operations
+   - vision/webcam_detection.py: Webcam-based detection
+
+3. Quantization Kernels
+---------------------
+a) Bit Quantization
+   - quantize_4bit.py: 4-bit quantization
+   - quantize_8bit.py: 8-bit quantization
+   - test_quantize_4bit.py: 4-bit quantization tests
+   - test_quantize_8bit.py: 8-bit quantization tests
+
+4. Basic Operations
+-----------------
+a) Matrix Operations
+   - matmul.py: Matrix multiplication
+   - transpose.py: Matrix transposition
+   - dot_product.py: Vector dot product
+
+b) Activation Functions
+   - gelu.py: GELU activation
+   - softmax.py: Softmax operation
+   - sample_logits.c: Logit sampling
+
+5. Memory Operations
+------------------
+a) Data Type Conversion
+   - fp16_to_fp32.py: Half to float conversion
+   - fp32_to_fp16.py: Float to half conversion
+
+b) Memory Management
+   - weight_initializer.py: Weight initialization
+   - kv_cache_update.py: Cache management
+
+6. Optimization Kernels
+---------------------
+a) Training Operations
+   - adam_update.py: Adam optimizer updates
+   - dropout.py: Dropout for regularization
+   - attention_backprop.py: Attention backpropagation
+
+b) Performance Optimization
+   - fused_transformer_op.py: Fused operations
+   - builder.py: Kernel building utilities
+   - utils.py: Utility functions
+
+7. Tokenization Kernels
+---------------------
+a) Token Processing
+   - tokenizer.py: Basic tokenization
+   - tokenizer_kernel.py: Kernel-optimized tokenization
+   - fixed_tokenizer_kernel.py: Fixed-size tokenization
+   - position_embedding.py: Position embedding
+
+8. Testing and Debugging
+----------------------
+a) Test Suites
+   - test_transformer.py: Transformer tests
+   - test_transformer_speed.py: Performance tests
+   - test_fused_transformer.py: Fused operation tests
+   - test_new_kernels.py: New kernel tests
+   - debug_transformer.py: Debugging utilities
+
+9. Utility Kernels
+----------------
+a) Helper Operations
+   - logger.py: Logging utilities
+   - utils.py: General utilities
+   - builder.py: Kernel building tools
+
+Note: This list represents all the kernel operations found in the ASM folder. Each kernel is implemented with ARM64 assembly optimizations and SIMD (NEON) instructions where applicable. The kernels are organized by their primary function and include both core operations and supporting utilities. 

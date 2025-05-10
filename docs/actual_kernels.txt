@@ -1,0 +1,76 @@
+OPENtransformer Actual ASM Kernels
+================================
+
+1. Vision Kernels
+---------------
+a) VisionKernelsASM (vision_kernels_asm.py)
+   - bgr_to_rgb_simd(): Converts BGR to RGB using SIMD
+   - normalize_image_simd(): Normalizes image data
+   - conv2d(): 2D convolution with SIMD optimization
+   - vit_patch_embedding_simd(): Vision Transformer patch embedding
+   - vit_attention_simd(): Multi-head attention computation
+   - vit_mlp_simd(): MLP/feed-forward layer operations
+
+2. Diffusion Kernels
+------------------
+a) DiffusionKernelsASM (diffusion_kernels_asm.py)
+   - forward_diffusion_asm(): Forward diffusion process
+   - reverse_diffusion_step_asm(): Reverse diffusion step
+   - Features:
+     * SIMD vectorization
+     * Fused operations
+     * Memory optimization
+     * Batch processing
+
+3. Basic Operations
+-----------------
+a) Dot Product (dot_product.py)
+   - _dot_product(): SIMD-optimized dot product
+   - Features:
+     * Vectorized multiplication
+     * Accumulation
+     * Remainder handling
+     * Memory alignment
+
+4. Vision Transformer
+-------------------
+a) VisionTransformerSIMD (vision_transformer_simd.py)
+   - _patch_embedding(): SIMD-optimized patch embedding
+   - Features:
+     * Batch processing
+     * Memory management
+     * SIMD operations
+     * Layer normalization
+
+5. Medical Imaging
+----------------
+a) YOLOSInference (webcam_detection.py)
+   - preprocess_image(): SIMD-optimized image preprocessing
+   - Features:
+     * Color space conversion
+     * Normalization
+     * Memory management
+     * Batch processing
+
+6. Financial Operations
+---------------------
+a) StocksAPI (stocks_api.py)
+   - _exponential_moving_average(): SIMD-optimized EMA calculation
+   - simulate_gbm(): Geometric Brownian Motion simulation
+   - Features:
+     * Matrix operations
+     * Memory optimization
+     * Batch processing
+     * Error handling
+
+7. Quantization
+-------------
+a) Quantize4BitKernel (test_quantize_4bit.py)
+   - quantize(): 4-bit quantization with SIMD
+   - Features:
+     * Vectorized operations
+     * Memory optimization
+     * Edge case handling
+     * Performance monitoring
+
+Note: These kernels are implemented in assembly language for ARM64 architecture, focusing on SIMD optimization and memory efficiency. Each kernel is designed to work with specific data types and operations, with fallback mechanisms to NumPy implementations when needed. The system prioritizes performance while maintaining numerical stability and accuracy. 

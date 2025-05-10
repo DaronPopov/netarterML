@@ -1,0 +1,189 @@
+# OPENtransformer Demos and Usage Guide
+# ====================================
+
+# Quick Start
+# ----------
+1. First time setup:
+   ```bash
+   # Make scripts executable
+   chmod +x scripts/load_env.sh scripts/run_demo.sh
+   
+   # Set your Hugging Face token
+   export HUGGINGFACE_TOKEN="your_token_here"
+   
+   # Download all models (required for offline mode)
+   python download_model.py
+   ```
+
+2. Environment Setup:
+   - The system uses environment variables to store Hugging Face API tokens
+   - Both `HF_API_TOKEN` and `HUGGINGFACE_TOKEN` are supported
+   - All demos support offline mode with the `--offline` flag
+   - Models are automatically downloaded and cached for offline use
+
+# Available Demos
+# --------------
+1. Image Generation (Stable Diffusion)
+   ```bash
+   # Generate a single image
+   ./scripts/run_demo.sh generate --prompt "your prompt" --offline
+   
+   # Generate multiple images
+   ./scripts/run_demo.sh generate --prompt "your prompt" --num-images 3 --offline
+   ```
+
+2. Medical Imaging Analysis (X-ray Analysis)
+   ```bash
+   # Analyze a single X-ray with interactive chat
+   ./scripts/run_demo.sh medical --image local_images/normal_1.jpg --offline
+   
+   # Available test images:
+   # - Normal X-rays: normal_1.jpg to normal_5.jpg
+   # - Pneumonia X-rays: pneumonia_1.jpg to pneumonia_5.jpg
+   
+   # Features:
+   # - Interactive chat about the analysis results
+   # - Multiple model iterations for consistent predictions
+   # - Detailed medical explanations
+   # - Confidence scoring
+   ```
+
+3. Language Chat (TinyLlama)
+   ```bash
+   # Start chat interface
+  ./scripts/run_demo.sh chat    
+   ```
+
+4. Webcam Captioning (BLIP)
+   ```bash
+   # Start webcam captioning
+   ./scripts/run_demo.sh webcam --offline
+   ```
+
+5. Code Generation (DeepSeek-Coder)
+   ```bash
+   # Interactive code generation
+   ./scripts/run_demo.sh code --interactive --offline
+   
+   # Generate code from a prompt
+   ./scripts/run_demo.sh code --prompt "Write a Python function to sort a list" --offline
+   
+   # Complete code in a file
+   ./scripts/run_demo.sh code --file path/to/your/code.py --offline
+   
+   # Features:
+   # - Interactive code generation
+   # - Code completion for existing files
+   # - Prompt-based code generation
+   # - Offline mode support
+   ```
+
+# Model Locations
+# -------------
+All models are stored in the following locations:
+- Image Generation: `models/vision/stable-diffusion-v1-4/`
+- Medical Imaging: `models/medical/biomedvlp-cxr/`
+- Language Model: `models/language/tinyllama-1.1b-chat/`
+- Vision (BLIP): `models/vision/blip-image-captioning-base/`
+
+# Troubleshooting
+# --------------
+1. Model Issues:
+   - If you get "Model not found" error, run `python download_model.py`
+   - Make sure your HUGGINGFACE_TOKEN is set correctly
+   - Always use `--offline` flag after downloading models
+
+2. Common Issues:
+   - If a demo fails, check if the model is downloaded correctly
+   - For webcam demo, ensure your camera is accessible
+   - For medical demo, ensure you're using valid X-ray images
+
+# Development
+# ----------
+For development and testing:
+1. Use `scripts/load_env.sh` to set up environment
+2. Run individual components directly
+3. Check logs in `logs/` directory
+4. Use `--debug` flag for verbose output
+
+# Execution Flows
+# --------------
+
+1. Webcam Captioning Flow:
+   ```
+   [User] → [run_demo.sh] → [load_env.sh]
+      ↓
+   [Webcam Access] → [BLIP Model]
+      ↓
+   [Image Processing] → [Caption Generation]
+      ↓
+   [Display Results]
+   ```
+
+2. Image Generation Flow:
+   ```
+   [User] → [run_demo.sh] → [load_env.sh]
+      ↓
+   [Stable Diffusion Pipeline]
+      ↓
+   [Text Encoder] → [Image Generation]
+      ↓
+   [Save/Display Images]
+   ```
+
+3. Medical Imaging Flow:
+   ```
+   [User] → [run_demo.sh] → [load_env.sh]
+      ↓
+   [Image Loading] → [Preprocessing]
+      ↓
+   [BiomedVLP Model] → [Analysis]
+      ↓
+   [Results Display]
+   ```
+
+4. Language Chat Flow:
+   ```
+   [User] → [run_demo.sh] → [load_env.sh]
+      ↓
+   [TinyLlama Model]
+      ↓
+   [Chat Interface] → [Response Generation]
+      ↓
+   [Display Chat]
+   ```
+
+# System Architecture
+# ------------------
+```
+[User Interface]
+      ↓
+[run_demo.sh] ← [load_env.sh]
+      ↓
+[Docker Container]
+      ↓
+[OPENtransformer Core]
+      ↓
+[Model Pipeline] ← [Local Model Storage]
+      ↓
+[Hardware Acceleration]
+```
+
+# Requirements
+# -----------
+- Python 3.12 or later
+- Hugging Face API token
+- Webcam (for webcam demo)
+- ~10GB disk space for models
+- Internet connection (for initial download)
+
+# Notes
+# -----
+- All demos support offline mode with `--offline` flag
+- Models are downloaded automatically when needed
+- Results are saved in appropriate directories
+- Use Ctrl+C to exit any demo gracefully
+
+
+
+

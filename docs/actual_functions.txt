@@ -1,0 +1,70 @@
+OPENtransformer Actual Functions
+=============================
+
+1. Language Processing
+--------------------
+a) LLMAPI (llm_api.py)
+   - load_model(): Loads and initializes language models
+   - chat(): Handles chat interactions with the model
+   - clear_history(): Clears conversation history
+
+b) Transformer (transformer.py)
+   - __init__(): Initializes transformer model
+   - generate(): Generates text from prompts
+   - sample_logits(): Implements token sampling
+
+c) ChatBot (chat_with_onnx.py)
+   - __init__(): Initializes chatbot with converted model
+   - chat(): Handles chat interactions
+   - _update_tps_display(): Updates and displays TPS rate
+
+2. Vision Processing
+------------------
+a) MedicalImagingEngine (medical_imaging_inference.py)
+   - __init__(): Initializes medical imaging engine
+   - initialize_model(): Loads and sets up medical imaging model
+
+b) CancerImagingEngine (cancer_imaging_inference.py)
+   - __init__(): Initializes cancer imaging engine
+   - initialize_model(): Loads and sets up cancer detection model
+
+3. Model Management
+-----------------
+a) HuggingFaceConverter (huggingface_converter.py)
+   - load_model(): Loads models from HuggingFace
+   - _infer_model_type(): Determines model type
+
+b) ConvertedModelLoader (loader.py)
+   - word_embeddings(): Converts input IDs to embeddings
+   - load_model(): Loads converted models
+
+4. CLI Interface
+--------------
+a) Main CLI (open_transformer_cli.py)
+   - main(): Handles command-line interface
+   - parse_args(): Parses command-line arguments
+
+5. Model Manager
+--------------
+a) ModelManager (models.py)
+   - __init__(): Initializes model manager
+   - get_user_input(): Gets user input for model selection
+   - get_image_input(): Gets image input for processing
+
+6. Quantized Models
+-----------------
+a) Quantized7BModel (chat_with_quantized_7b.py)
+   - __init__(): Initializes quantized model
+   - calculate_model_size_gb(): Calculates model size
+
+7. Utility Functions
+------------------
+a) Memory Management
+   - cleanup_memory(): Cleans up system memory
+   - handle_exception(): Manages exceptions
+
+b) Performance Monitoring
+   - _update_tps_display(): Updates token generation speed
+   - monitor_progress(): Tracks processing progress
+
+Note: This list represents the actual implemented functions found in the codebase. Some functions mentioned in the previous overview were either planned features or hypothetical implementations. The actual system focuses on language processing, medical imaging, and model management with a strong emphasis on optimization and performance monitoring. 
