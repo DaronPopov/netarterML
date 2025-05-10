@@ -1,114 +1,70 @@
-# OPENtransformer Inference Scripts
+# OPENtransformer
 
-Quick reference for running inference scripts in the OPENtransformer engine.
+A powerful transformer-based machine learning framework with optimized inference engines for various tasks including diffusion models, vision transformers, and LLMs.
 
-## Download Model Scripts
+## Quick Start
 
-Download Stable Diffusion v1.5:
+1. Clone the repository:
 ```bash
-python download_model.py
-# download_model.py
+git clone https://github.com/DaronPopov/netarterML.git
+cd netarterML
 ```
 
-Download Dreamlike PhotoReal 2.0:
+2. Create and activate a virtual environment:
 ```bash
-python download_realistic.py
-# download_realistic.py
+python -m venv venv
+source venv/bin/activate  # On Windows use: venv\Scripts\activate
 ```
 
-Download Dreamshaper:
+3. Install dependencies:
 ```bash
-python download_dreamshaper.py
-# download_dreamshaper.py
+pip install -r requirements.txt
 ```
 
-Download Stable Diffusion v2:
+4. Set up your Hugging Face token (required for model downloads):
 ```bash
-python download_sdv2.py
-# download_sdv2.py
+export HF_TOKEN=your_token_here  # On Windows use: set HF_TOKEN=your_token_here
 ```
 
-## Image Generation Commands
+## Model Downloads
 
-Generate using Python with custom parameters:
+The framework supports various models that can be downloaded as needed:
+
+### Diffusion Models
 ```bash
-python test_py_direct.py --prompt "your prompt here" --model "runwayml/stable-diffusion-v1-5" --steps 25 --guidance 7.5 --size 512 --output "output.png"
-# test_py_direct.py
+# Download Stable Diffusion v1.5
+python OPENtransformer/arm64_engine/core/c_inference/download_model.py
+
+# Download Dreamlike PhotoReal 2.0
+python OPENtransformer/arm64_engine/core/c_inference/download_realistic.py
+
+# Download Dreamshaper
+python OPENtransformer/arm64_engine/core/c_inference/download_dreamshaper.py
+
+# Download Stable Diffusion v2
+python OPENtransformer/arm64_engine/core/c_inference/download_sdv2.py
 ```
 
-Generate using shell script with token:
+### Vision Models
 ```bash
-./run_with_token.sh "your prompt here" "runwayml/stable-diffusion-v1-5"
-# run_with_token.sh
+# Download vision model weights
+python OPENtransformer/vision/download_weights.py
 ```
 
-Run with Python and token:
+### LLM Models
 ```bash
-python run_with_token_python.py --prompt "your prompt here" --model "runwayml/stable-diffusion-v1-5" --steps 25 --guidance 7.5 --size 512
-# run_with_token_python.py
+# Download LLM weights
+python OPENtransformer/chat/download_weights.py
 ```
 
-Generate multiple portraits:
-```bash
-python generate_portraits.py
-# generate_portraits.py
-```
+## Usage Examples
 
-Run standard test:
-```bash
-./run_test.sh "your prompt here" --model="runwayml/stable-diffusion-v1-5" --steps=25 --guidance=7.5 --size=512
-# run_test.sh
-```
-
-## Easy Diffusion API
-
-A simple API for hot-swapping diffusion models, allowing easy model management and inference.
-
-### Usage
-
-```bash
-# List registered models
-python easy_diffusion_api.py list
-
-# Register a model
-python easy_diffusion_api.py register "sd-v1-5" --path "runwayml/stable-diffusion-v1-5"
-
-# Set active model
-python easy_diffusion_api.py activate "sd-v1-5"
-
-# Generate an image
-python easy_diffusion_api.py generate "a beautiful landscape" --steps 25 --guidance 7.5 --output "output.png"
-
-# Download a model from Hugging Face
-python easy_diffusion_api.py download "runwayml/stable-diffusion-v1-5"
-```
-
-### API Examples
-
-Run the example file to see different usage scenarios:
-
-```bash
-# Run all examples
-python easy_diffusion_example.py
-
-# Run specific examples
-python easy_diffusion_example.py basic
-python easy_diffusion_example.py multiple
-python easy_diffusion_example.py download
-python easy_diffusion_example.py programmatic
-```
-
-### Programmatic Usage
-
+### Image Generation
 ```python
-from easy_diffusion_api import EasyDiffusionAPI
+from OPENtransformer.diffusion.easy_diffusion_api import EasyDiffusionAPI
 
-# Create API instance
+# Initialize API
 api = EasyDiffusionAPI()
-
-# Register and activate a model
-api.register_model("sd-v1-5", "runwayml/stable-diffusion-v1-5")
-api.set_active_model("sd-v1-5")
 
 # Generate an image
 result = api.generate_image(
@@ -119,44 +75,56 @@ result = api.generate_image(
 )
 ```
 
-## Utilities
+### Vision Tasks
+```python
+from OPENtransformer.vision.easy_image import EasyVisionAPI
 
-Set Hugging Face token:
-```bash
-export HF_TOKEN=your_token_here
+# Initialize API
+api = EasyVisionAPI()
+
+# Process an image
+result = api.process_image("input.jpg")
 ```
 
-Build and test integration:
-```bash
-./build_and_test_integration.sh
-# build_and_test_integration.sh
+### LLM Chat
+```python
+from OPENtransformer.chat.llm_api import LLMAPI
+
+# Initialize API
+api = LLMAPI()
+
+# Generate response
+response = api.generate("Your prompt here")
 ```
 
-Convert model weights:
+## Development Setup
+
+For development work:
+
+1. Install development dependencies:
 ```bash
-python convert_model.py
-# convert_model.py
+pip install -r requirements-dev.txt
 ```
 
-Run benchmark:
+2. Run tests:
 ```bash
-./benchmark.sh
-# benchmark.sh
+./scripts/run_tests.sh
 ```
 
-## Setup
+## Project Structure
 
-1. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+- `OPENtransformer/` - Main package directory
+  - `arm64_engine/` - Optimized inference engine
+  - `chat/` - LLM and chat functionality
+  - `diffusion/` - Image generation models
+  - `vision/` - Computer vision models
+  - `core/` - Core transformer implementations
+  - `ui/` - User interface components
 
-2. Set your Hugging Face token as an environment variable:
-```bash
-export HF_TOKEN=your_token_here
-```
+## Contributing
 
-3. Run the application:
-```bash
-python ui/app.py
-``` 
+Please read [CONTRIBUTING.md](docs/contributing.md) for details on our code of conduct and the process for submitting pull requests.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](docs/test_and_deps/LICENSE.txt) file for details. 
