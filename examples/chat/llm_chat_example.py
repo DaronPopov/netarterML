@@ -12,29 +12,28 @@ try:
     from engines.llm_api import LLMAPI
     print("Successfully imported C/ASM-based LLMAPI")
 except ImportError as e:
-    print(f"Error importing C/ASM-based LLMAPI: {e}")
+    print(f"Error importing LLMAPI: {e}")
     sys.exit(1)
 
 def main():
-    print("Loading Phi-2 model with C/ASM backend...")
-    model_name = "microsoft/phi-2"  # Using Microsoft's Phi-2 model
+    print("Loading TinyLlama 1.1B model with C/ASM backend...")
+    model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"  # Using TinyLlama 1.1B Chat model
     hf_token = os.getenv('HUGGINGFACE_TOKEN')
     if not hf_token:
         print("Error: HUGGINGFACE_TOKEN environment variable not set")
         sys.exit(1)
 
-    # Initialize the API with SIMD optimizations (C/ASM backend)
+    # Initialize the API with C/ASM backend
     chat = LLMAPI(model_name=model_name, hf_token=hf_token, use_simd=True)
     
-    # Load model with C backend for weight conversion and FP16 optimization
-    print("Loading and converting model weights using C backend...")
+    # Load model with C/ASM backend
+    print("Loading model with C/ASM backend...")
     chat.load_model(
         device_map="cpu",
-        torch_dtype=None,  # Let C backend handle dtype conversion
+        torch_dtype=None,  # Let C/ASM backend handle dtype
         use_simd=True
     )
-    print("\nPhi-2 Chat initialized with C/ASM backend!")
-    print("Model weights optimized for C/ASM kernels")
+    print("\nTinyLlama Chat initialized with C/ASM backend!")
     print("----------------------------------------")
 
     # Chat loop
@@ -50,7 +49,7 @@ def main():
                 temperature=0.7,
                 top_p=0.9
             )
-            print("\nPhi-2:", response)
+            print("\nTinyLlama:", response)
         except Exception as e:
             print(f"\nError: {str(e)}")
             print("Please try again.")

@@ -2,138 +2,116 @@
 
 This directory contains runnable examples for using various AI models and capabilities through the Local AI Engine. Follow these instructions to ensure all examples and tests work smoothly.
 
-## One-Command Quick Start
+## Quick Start: Run Any Example with One Command
 
-Copy and paste this block into your terminal to set up and verify your environment:
+After setup, you can run any example with a single bash script:
 
+### Vision (Image Captioning, Classification, etc.)
 ```bash
-# 1. Install dependencies
-pip install -r requirements.txt
-
-# 2. Set your Hugging Face token (replace with your actual token)
-export HF_TOKEN=your_token_here
-
-# 3. Set the Python path for core inference modules
-export PYTHONPATH=OPENtransformer/arm64_engine/core/c_inference
-
-# 4. Run the system check to verify all imports and readiness
-python tests/test_vision_download.py
+bash scripts/run_vision.sh
 ```
-
-If you see all ✓ messages and no errors, your environment is ready for model downloading and inference!
-
----
-
-## One-Command Quick Start for Each Modality
-
-After verifying your environment, you can run a full quick start for each modality with a single copy-paste command block:
 
 ### Diffusion (Image Generation)
 ```bash
-pip install -r requirements.txt
-export HF_TOKEN=your_token_here
-export PYTHONPATH=OPENtransformer/arm64_engine/core/c_inference
-python examples/diffusion/easy_diffusion_example.py
+bash scripts/run_c_diffusion.sh
 ```
 
-### Vision (Image Classification, Captioning, etc.)
+### Chat (Language Model)
 ```bash
-pip install -r requirements.txt
-export HF_TOKEN=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
-export PYTHONPATH=OPENtransformer/arm64_engine/core/c_inference
-python examples/vision/vision_api.py
-```
-
-### Chat (Language Model Conversation)
-```bash
-pip install -r requirements.txt
-export HF_TOKEN=your_token_here
-export PYTHONPATH=OPENtransformer/arm64_engine/core/c_inference
-python examples/chat/tinyllama_chat.py
+bash scripts/run_chat.sh
 ```
 
 ### Multimodal (Vision + Language)
 ```bash
-pip install -r requirements.txt
-export HF_TOKEN=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
-export PYTHONPATH=OPENtransformer/arm64_engine/core/c_inference
-python examples/multimodal/multimodal_pipeline.py
+bash scripts/run_multimodal.sh
 ```
 
 ---
 
-## Directory Structure
+## Setup
 
-- `diffusion/`: Image generation using diffusion models
-- `chat/`: Text generation and conversation using language models
-- `multimodal/`: Vision and language model combinations
-- `vision/`: Vision-only tasks (e.g., classification, captioning)
-
-## Quick Setup
-
-1. **Install dependencies:**
+1. **Create and activate virtual environment:**
    ```bash
-   pip install -r requirements.txt
-   ```
-2. **Set your Hugging Face token as an environment variable:**
-   ```bash
-   export HF_TOKEN=your_token_here
-   ```
-3. **Set the Python path for examples that require core inference modules:**
-   ```bash
-   export PYTHONPATH=OPENtransformer/arm64_engine/core/c_inference
+   python -m venv venv
+   source venv/bin/activate
    ```
 
-## Running Example Scripts
+2. **Install the package with all dependencies:**
+   ```bash
+   pip install -e .
+   ```
 
-- **Diffusion Example:**
-  ```bash
-  python examples/diffusion/easy_diffusion_example.py
-  ```
-- **Vision Example:**
-  ```bash
-  python examples/vision/vision_api.py
-  ```
-- **Chat Example:**
-  ```bash
-  python examples/chat/tinyllama_chat.py
-  ```
-- **Multimodal Example:**
-  ```bash
-  python examples/multimodal/multimodal_pipeline.py
-  ```
+3. **Build the C Inference Engine (for Diffusion and LLM):**
+   ```bash
+   bash scripts/build_c_inference.sh
+   ```
 
-> **Tip:** Always ensure you have set the `PYTHONPATH` as above before running any example that depends on custom C/C++/Python modules in `OPENtransformer/arm64_engine/core/c_inference`.
+4. **Set up environment variables:**
+   ```bash
+   # Set Hugging Face token (required for model downloads)
+   export HUGGINGFACE_TOKEN=your_token_here
+   
+   # Set Python path for C/ASM backend
+   export PYTHONPATH="/path/to/your/project/OPENtransformer/arm64_engine/core/c_inference:$PYTHONPATH"
+   ```
 
-## Running Tests
+---
 
-To verify your installation and imports, you can run the provided test scripts:
+## Scripts Directory
+- `scripts/run_vision.sh`: Runs the vision example
+- `scripts/run_c_diffusion.sh`: Runs the diffusion example with C backend
+- `scripts/run_chat.sh`: Runs the chat example
+- `scripts/run_multimodal.sh`: Runs the multimodal example
+- `scripts/build_c_inference.sh`: Builds the C backend for diffusion and LLM
 
-```bash
-python tests/test_vision_download.py
+---
+
+## Available Examples
+
+### Vision Examples
 ```
 
-This script checks that all major modules (diffusion, vision, chat, core kernels) can be imported and initialized.
+## Interactive Demos
 
-## Troubleshooting
+### LLM Chat Demo with C/ASM Backend
+Run the LLM chat demo with optimized C/ASM backend using TinyLlama 1.1B:
 
-- **ImportError: No module named 'py_diffusion_interface'**
-  - Make sure you have set the `PYTHONPATH` as shown above.
-- **Hugging Face Token Errors**
-  - Ensure you have set your `HF_TOKEN` environment variable with a valid token.
-- **Missing dependencies**
-  - Run `pip install -r requirements.txt` again to ensure all dependencies are installed.
-- **GPU/CPU Warnings**
-  - Some warnings (e.g., bitsandbytes, CUDA) are informational and do not prevent CPU-based inference.
+1. **Get your Hugging Face token:**
+   - Go to https://huggingface.co/
+   - Create an account or log in
+   - Go to your profile settings
+   - Create a new token
 
-## Best Practices
+2. **Set up the environment:**
+   ```bash
+   # Set your Hugging Face token
+   export HUGGINGFACE_TOKEN=your_token_here
+   
+   # Set Python path for C/ASM backend
+   export PYTHONPATH="/path/to/your/project/OPENtransformer/arm64_engine/core/c_inference:$PYTHONPATH"
+   ```
 
-- Use appropriate model size for your hardware
-- Monitor resource usage
-- Implement proper error handling
-- Use system prompts when available
-- Follow model-specific guidelines
+3. **Build the C/ASM backend:**
+   ```bash
+   bash scripts/build_c_inference.sh
+   ```
 
-## Contributing
+4. **Run the chat example:**
+   ```bash
+   cd examples/chat
+   python llm_chat_example.py
+   ```
 
-Feel free to contribute new examples or improve existing ones. Please follow the established patterns and include proper documentation. 
+The chat interface will start and you can interact with the TinyLlama 1.1B model. Type 'quit' to exit.
+
+### Vision Webcam Demo
+Run the vision webcam demo interactively:
+```bash
+bash scripts/run_vision_webcam.sh
+```
+
+### Diffusion Demo
+Run the diffusion demo interactively:
+```bash
+bash scripts/run_c_diffusion.sh
+```

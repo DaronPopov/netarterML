@@ -47,18 +47,19 @@ $(info Python lib directory: $(PYTHON_LIB))
 CFLAGS = -O3 -Wall -Wextra -march=native -mtune=native -fPIC -I$(PYTHON_INCLUDE) -I$(NUMPY_INCLUDE)
 LDFLAGS = -L$(PYTHON_LIB) -lpython$(PYTHON_VERSION) -Wl,-rpath,$(PYTHON_LIB)
 
-# Source files
-SRCS = test_diffusion.c \
-       c_inference_engine.c \
+# Source files for LLM inference
+SRCS = c_inference_engine.c \
        asm_kernel_orchestrator.c \
        python_bridge.c \
        diffusion_kernels.c \
        weight_converter.c \
-       diffusion_wrapper.c
+       diffusion_wrapper.c \
+       llm_inference_api.c
 
 OBJS = $(SRCS:.c=.o)
 
-TARGET = test_diffusion
+# Target shared library
+TARGET = libllm_inference.so
 
 # Targets
 .PHONY: all clean
@@ -66,7 +67,7 @@ TARGET = test_diffusion
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) $(OBJS) $(LDFLAGS) -o $@
+	$(CC) -shared -o $@ $(OBJS) $(LDFLAGS)
 
 # Show Python configuration
 python-config:
@@ -98,7 +99,7 @@ distclean: clean
 # Dependencies
 diffusion_wrapper.o: diffusion_wrapper.c diffusion_wrapper.h
 python_bridge.o: python_bridge.c diffusion_wrapper.h asm_kernel_orchestrator.h
-test_diffusion.o: test_diffusion.c diffusion_wrapper.h
 asm_kernel_orchestrator.o: asm_kernel_orchestrator.c asm_kernel_orchestrator.h
 diffusion_kernels.o: diffusion_kernels.c diffusion_kernels.h
-weight_converter.o: weight_converter.c weight_converter.h 
+weight_converter.o: weight_converter.c weight_converter.h
+llm_inference_api.o: llm_inference_api.c c_inference_engine.h 
