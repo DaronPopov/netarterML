@@ -1,12 +1,14 @@
 #!/bin/bash
 # Run the Dreamshaper XL Lightning model with appropriate settings for fast, high-quality generations
 
-# Set the Hugging Face token if you have one in an environment variable
-if [ -n "$HF_TOKEN" ]; then
-    export HF_TOKEN="$HF_TOKEN"
-elif [ -f "$HOME/.hf_token" ]; then
-    export HF_TOKEN=$(cat "$HOME/.hf_token")
+# Ensure the Hugging Face token is set as an environment variable
+if [ -z "$HF_TOKEN" ]; then
+  echo "Error: HF_TOKEN environment variable is not set."
+  echo "Please set it before running the script: export HF_TOKEN='your_token_here'"
+  exit 1
 fi
+
+# The script will use the HF_TOKEN from the environment
 
 # Check if model already exists instead of re-downloading
 MODEL_PATH="models/dreamshaper-xl-lightning"

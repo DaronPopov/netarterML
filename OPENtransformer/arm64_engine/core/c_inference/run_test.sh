@@ -3,11 +3,15 @@
 # Ensure working in the correct directory
 cd "$(dirname "$0")"
 
-# Set Hugging Face token
-export HF_TOKEN="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"
-export HUGGING_FACE_HUB_TOKEN="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"
+# Ensure the Hugging Face token is set as an environment variable
+if [ -z "$HF_TOKEN" ]; then
+  echo "Error: HF_TOKEN environment variable is not set."
+  echo "Please set it before running the script: export HF_TOKEN='your_token_here'"
+  exit 1
+fi
 
-echo "Hugging Face token set: $HF_TOKEN"
+# The HF_TOKEN environment variable should be used by Hugging Face libraries.
+echo "Using HF_TOKEN from environment: $HF_TOKEN"
 
 # Ensure the generated_images directory exists
 mkdir -p generated_images

@@ -172,7 +172,9 @@ class WebcamDetectionEngine:
 def main():
     # ===== CONFIGURE YOUR MODEL HERE =====
     MODEL_NAME = "runwayml/stable-diffusion-v1-5"  # Change this to your desired model
-    HF_TOKEN = "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"      # Replace with your token
+    HF_TOKEN = os.getenv("HUGGINGFACE_TOKEN")
+    if not HF_TOKEN:
+        print("Warning: HUGGINGFACE_TOKEN environment variable not set. Model downloads may fail.")
     # =====================================
     
     try:

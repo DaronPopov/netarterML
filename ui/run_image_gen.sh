@@ -1,8 +1,16 @@
 #!/bin/bash
 
-# Set Hugging Face token
-export HF_TOKEN="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"
-export HUGGING_FACE_HUB_TOKEN="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"
+# Ensure the Hugging Face token is set as an environment variable
+if [ -z "$HF_TOKEN" ]; then
+  echo "Error: HF_TOKEN environment variable is not set."
+  echo "Please set it before running the script: export HF_TOKEN='your_token_here'"
+  exit 1
+fi
+
+# The script will use the HF_TOKEN from the environment
+
+APP_PATH="$(dirname "$0")/app.py"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 echo "Hugging Face token set: $HF_TOKEN"
 

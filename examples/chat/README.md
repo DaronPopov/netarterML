@@ -15,7 +15,7 @@ from llm_api import LLMAPI
 # Initialize API with a model
 api = LLMAPI(
     model_name="meta-llama/Llama-2-7b-chat-hf",
-    hf_token="your_hf_token"
+    hf_token="your_token_here"
 )
 
 # Load model
@@ -59,3 +59,9 @@ conversation.start_conversation()
 3. Monitor token usage for cost control
 4. Use system prompts for better control
 5. Implement proper error handling 
+
+```bash
+export HUGGINGFACE_TOKEN="your_token_here"  # Recommended: Use environment variable
+# or for a quick test (not recommended for security):
+# hf_token="your_actual_hf_token_here"
+python llm_chat_example.py 

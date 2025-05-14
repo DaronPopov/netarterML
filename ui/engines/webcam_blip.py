@@ -15,6 +15,13 @@ from queue import Queue
 from OPENtransformer.arm64_engine.core.asm.kernels.vision.vision_kernels_asm import VisionKernelsASM
 from OPENtransformer.arm64_engine.core.asm.kernels.vision.vision_transformer_simd import VisionTransformerSIMD
 
+# Hugging Face Token for model downloads
+# It's recommended to set this as an environment variable HUGGINGFACE_TOKEN
+HF_TOKEN = os.getenv("HUGGINGFACE_TOKEN")
+if not HF_TOKEN:
+    print("Warning: HUGGINGFACE_TOKEN environment variable not set. Model downloads may fail.")
+    # HF_TOKEN = "your_fallback_token_here_if_absolutely_necessary_and_understand_security_risks"
+
 def validate_model_and_token(model_name: str, hf_token: str) -> bool:
     """
     Validate the model name and token before attempting to load.
@@ -137,6 +144,10 @@ class WebcamBlipEngine:
         self.caption_thread = threading.Thread(target=self._caption_generation_loop)
         self.caption_thread.daemon = True
         self.caption_thread.start()
+        
+        self.hf_token = hf_token
+        if not self.hf_token:
+            print("Warning: HUGGINGFACE_TOKEN environment variable not set. Model downloads may fail.")
     
     def preprocess_frame(self, frame):
         """Preprocess frame for model input using SIMD-optimized kernels"""
@@ -307,7 +318,11 @@ def run_webcam_blip(model_name: str, hf_token: str):
 def main():
     # ===== CONFIGURE YOUR MODEL HERE =====
     MODEL_NAME = "Salesforce/blip-image-captioning-base"  # Change this to your desired model
-    HF_TOKEN = "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"      # Replace with your token
+    # HF_TOKEN = "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"      # This line will be removed
+    # It's recommended to set HUGGINGFACE_TOKEN as an environment variable
+    HF_TOKEN = os.getenv("HUGGINGFACE_TOKEN")
+    if not HF_TOKEN:
+        print("Warning: HUGGINGFACE_TOKEN environment variable not set. Model downloads may fail.")
     # =====================================
     
     run_webcam_blip(MODEL_NAME, HF_TOKEN)
