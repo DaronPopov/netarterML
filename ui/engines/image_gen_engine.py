@@ -9,6 +9,9 @@ import platform
 import subprocess
 import argparse
 from pathlib import Path
+import torch
+from diffusers import StableDiffusionPipeline, EulerDiscreteScheduler
+from PIL import Image
 
 # Add the C inference directory to the path
 project_root = Path(__file__).resolve().parent.parent.parent
@@ -17,6 +20,83 @@ c_inference_path = project_root / "OPENtransformer" / "arm64_engine" / "core" / 
 # Set Hugging Face token
 os.environ["HF_TOKEN"] = "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"
 os.environ["HUGGING_FACE_HUB_TOKEN"] = "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"
+
+class ImageGenEngine:
+    def __init__(self, model_id="runwayml/stable-diffusion-v1-5", device="cpu"):
+        self.model_id = model_id
+        self.device = device
+        self.pipe = None
+        self.hf_token = os.getenv("HUGGINGFACE_TOKEN")
+        if not self.hf_token:
+            print("Warning: HUGGINGFACE_TOKEN environment variable not set. Model downloads may fail.")
+        self._load_model()
+
+    def _load_model(self):
+        print(f"Loading model: {self.model_id} on {self.device}")
+        try:
+            # Try to load with specific scheduler and reduced precision for potentially faster inference
+            scheduler = EulerDiscreteScheduler.from_pretrained(self.model_id, subfolder="scheduler", token=self.hf_token)
+            self.pipe = StableDiffusionPipeline.from_pretrained(
+                self.model_id,
+                scheduler=scheduler,
+                torch_dtype=torch.float16 if self.device == "cuda" else torch.float32,
+                use_safetensors=True,
+                token=self.hf_token
+            )
+            self.pipe = self.pipe.to(self.device)
+            # If on MPS (Mac), enable attention slicing for memory efficiency
+            if self.device == "mps":
+                self.pipe.enable_attention_slicing()
+            print("Model loaded successfully.")
+        except Exception as e:
+            print(f"Error loading model {self.model_id}: {e}")
+            print("Attempting to load without scheduler and safetensors...")
+            try:
+                self.pipe = StableDiffusionPipeline.from_pretrained(
+                    self.model_id,
+                    torch_dtype=torch.float16 if self.device == "cuda" else torch.float32,
+                    token=self.hf_token
+                )
+                self.pipe = self.pipe.to(self.device)
+                if self.device == "mps":
+                    self.pipe.enable_attention_slicing()
+                print("Fallback model loaded successfully.")
+            except Exception as e2:
+                print(f"Fallback model loading failed: {e2}")
+                self.pipe = None
+
+    def generate_image(self, prompt: str, num_inference_steps: int = 20, guidance_scale: float = 7.5, height: int = 512, width: int = 512):
+        if not self.pipe:
+            print("Model not loaded. Cannot generate image.")
+            return None
+
+        print(f"Generating image with prompt: '{prompt}'")
+        start_time = time.time()
+        try:
+            # Generate the image
+            with torch.no_grad(): # Ensure gradients are not computed
+                image = self.pipe(
+                    prompt,
+                    num_inference_steps=num_inference_steps,
+                    guidance_scale=guidance_scale,
+                    height=height,
+                    width=width
+                ).images[0]
+            end_time = time.time()
+            print(f"Image generated in {end_time - start_time:.2f} seconds.")
+            return image
+        except Exception as e:
+            print(f"Error during image generation: {e}")
+            return None
+
+    def change_model(self, new_model_id: str):
+        if new_model_id != self.model_id:
+            print(f"Changing model to: {new_model_id}")
+            self.model_id = new_model_id
+            # Reload the model, token is already stored or will be None
+            self._load_model()
+        else:
+            print("New model ID is the same as the current one. No change needed.")
 
 def generate_image(
     prompt, 

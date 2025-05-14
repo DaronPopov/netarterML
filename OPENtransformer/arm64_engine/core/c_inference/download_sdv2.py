@@ -9,84 +9,84 @@ import torch
 from diffusers import StableDiffusionPipeline
 import numpy as np
 from tqdm import tqdm
+from huggingface_hub import hf_hub_download
+from pathlib import Path
 
-# Set Hugging Face token environment variable
-os.environ["HF_TOKEN"] = "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"
-os.environ["HUGGING_FACE_HUB_TOKEN"] = "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"
+# Ensure the project root is in the Python path
+project_root = Path(__file__).resolve().parent.parent.parent.parent.parent
+sys.path.append(str(project_root))
 
-def download_and_convert_model():
-    model_id = "stabilityai/stable-diffusion-2-1"
-    model_path = "models/stable-diffusion-2-1"
-    
-    # Get token from environment variable
-    hf_token = os.environ.get("HF_TOKEN")
-    if not hf_token:
-        print("Warning: HF_TOKEN environment variable not set")
-        print("You can set it using 'export HF_TOKEN=your_token_here'")
-        exit(1)
+# Configuration
+MODEL_NAME = "stabilityai/stable-diffusion-2-1-base"
+MODEL_DIR = project_root / "models" / "stable-diffusion-2-1-base"
 
-    print(f"Using Hugging Face token: {hf_token[:5]}***...")
-    
-    if not os.path.exists(model_path):
-        os.makedirs(model_path, exist_ok=True)
-        print(f"Downloading Stable Diffusion 2.1 model to {model_path}...")
-        
-        # Download the model
-        pipe = StableDiffusionPipeline.from_pretrained(
-            model_id, 
-            torch_dtype=torch.float32,
-            use_auth_token=os.environ.get("HF_TOKEN")
+# Ensure model directory exists
+MODEL_DIR.mkdir(parents=True, exist_ok=True)
+
+# Get Hugging Face token from environment variable
+HF_TOKEN = os.getenv("HUGGINGFACE_TOKEN")
+if not HF_TOKEN:
+    print("Error: HUGGINGFACE_TOKEN environment variable not set.")
+    print("Please set it before running the script: export HUGGINGFACE_TOKEN='your_token_here'")
+    # sys.exit(1) # Optionally exit if token is crucial
+
+# Files to download (based on a typical SD 2.1 base structure)
+MODEL_FILES = [
+    "model_index.json",
+    "scheduler/scheduler_config.json",
+    "text_encoder/config.json",
+    "text_encoder/pytorch_model.bin",
+    "tokenizer/merges.txt",
+    "tokenizer/special_tokens_map.json",
+    "tokenizer/tokenizer_config.json",
+    "tokenizer/vocab.json",
+    "unet/config.json",
+    "unet/diffusion_pytorch_model.bin",
+    "vae/config.json",
+    "vae/diffusion_pytorch_model.bin",
+    "v2-1_512-ema-pruned.safetensors" # Common single-file checkpoint if used
+]
+
+def download_file(repo_id, filename, local_dir, token):
+    """Downloads a file from Hugging Face Hub."""
+    print(f"Downloading {filename} from {repo_id}...")
+    try:
+        # Determine subfolder from filename if present
+        subfolder = ""
+        if "/" in filename:
+            parts = filename.split("/")
+            subfolder = "/".join(parts[:-1])
+            file_to_dl = parts[-1]
+            dl_target_dir = Path(local_dir) / subfolder
+            dl_target_dir.mkdir(parents=True, exist_ok=True)
+        else:
+            file_to_dl = filename
+            dl_target_dir = Path(local_dir)
+
+        hf_hub_download(
+            repo_id=repo_id,
+            filename=filename, # Use original filename for repo path
+            local_dir=dl_target_dir,
+            local_dir_use_symlinks=False,
+            token=token
         )
-        
-        # Save the model locally
-        pipe.save_pretrained(model_path)
-        print(f"Model saved to {model_path}")
-        
-        # Convert to float32 numpy arrays for C
-        print("Converting model components to binary format...")
-        
-        # Convert UNet weights
-        unet_weights = {}
-        state_dict = pipe.unet.state_dict()
-        for k, v in tqdm(state_dict.items(), desc="Converting UNet weights"):
-            unet_weights[k] = v.cpu().numpy().astype(np.float32)
-        
-        # Convert VAE weights
-        vae_weights = {}
-        state_dict = pipe.vae.state_dict()
-        for k, v in tqdm(state_dict.items(), desc="Converting VAE weights"):
-            vae_weights[k] = v.cpu().numpy().astype(np.float32)
-        
-        # Convert text encoder weights
-        text_encoder_weights = {}
-        state_dict = pipe.text_encoder.state_dict()
-        for k, v in tqdm(state_dict.items(), desc="Converting text encoder weights"):
-            text_encoder_weights[k] = v.cpu().numpy().astype(np.float32)
-        
-        # Save weights in binary format for C
-        print("Saving weights in binary format...")
-        with open(os.path.join(model_path, "unet.bin"), "wb") as f:
-            np.savez(f, **unet_weights)
-        
-        with open(os.path.join(model_path, "vae.bin"), "wb") as f:
-            np.savez(f, **vae_weights)
-        
-        with open(os.path.join(model_path, "text_encoder.bin"), "wb") as f:
-            np.savez(f, **text_encoder_weights)
-        
-        print("Model download and conversion complete!")
-    else:
-        print(f"Model directory {model_path} already exists.")
-        
-        # Check if binary files exist
-        if not all(os.path.exists(os.path.join(model_path, f)) for f in ["unet.bin", "vae.bin", "text_encoder.bin"]):
-            print("Binary model files are missing, downloading and converting...")
-            # Remove directory and restart
-            import shutil
-            shutil.rmtree(model_path)
-            download_and_convert_model()
+        print(f"Successfully downloaded {filename} to {dl_target_dir}")
+    except Exception as e:
+        print(f"Error downloading {filename}: {e}")
+
+def main():
+    print(f"Starting download of {MODEL_NAME} model...")
+
+    # Download main model files
+    for file_path_in_repo in MODEL_FILES:
+        # Check if the file is the .safetensors file, which might be at the root
+        if file_path_in_repo == "v2-1_512-ema-pruned.safetensors":
+            # For safetensors, download to the MODEL_DIR root, not a subfolder
+             download_file(MODEL_NAME, file_path_in_repo, MODEL_DIR, HF_TOKEN)
+        else:
+            download_file(MODEL_NAME, file_path_in_repo, MODEL_DIR, HF_TOKEN)
+
+    print("Download process completed.")
 
 if __name__ == "__main__":
-    print("Starting Stable Diffusion 2.1 model download...")
-    download_and_convert_model()
-    print("Done!") 
+    main() 
