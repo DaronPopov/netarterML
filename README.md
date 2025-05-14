@@ -1,4 +1,4 @@
-# NetArteryML
+# NetArterML
 
 A comprehensive machine learning toolkit for medical imaging, vision, and language models.
 
@@ -48,45 +48,10 @@ pip install -e .
 
 4. Set up Hugging Face token (required for model downloads):
 ```bash
-export HUGGINGFACE_TOKEN="your_token_here"  # On Windows: set HUGGINGFACE_TOKEN=your_token_here
+export HUGGINGFACE_TOKEN="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"  # On Windows: set HUGGINGFACE_TOKEN=your_token_here
 ```
 
-5. Build the C/ASM backend (required for diffusion and LLM features):
-```bash
-./scripts/build_c_inference.sh
-```
 
-## C/ASM Backend Setup
-
-The C/ASM backend is required for optimal performance of diffusion and LLM features. To set it up:
-
-1. Ensure you have the required build tools:
-   - GCC/G++ (Linux/Mac)
-   - Visual Studio Build Tools (Windows)
-   - CMake 3.15 or higher
-
-2. Build the backend:
-```bash
-./scripts/build_c_inference.sh
-```
-
-3. Set the Python path (add to your shell profile):
-```bash
-export PYTHONPATH="/path/to/your/project/OPENtransformer/arm64_engine/core/c_inference:$PYTHONPATH"
-```
-
-## Model Management
-
-### Model Caching
-- Models are cached in `~/.cache/huggingface/hub/` by default
-- First run will download required models
-- Subsequent runs will use cached models
-- Clear cache with: `rm -rf ~/.cache/huggingface/hub/`
-
-### Storage Requirements
-- Base installation: ~500MB
-- Full model cache: ~10GB
-- Temporary files: ~2GB during generation
 
 ## Available Demos
 
@@ -109,24 +74,20 @@ Interactive chat interface powered by language models.
 ```
 
 ### 4. Image Generation
-Multiple options for image generation:
+you can setup ur own normal image gen pipeline with my system but i setup a multimodal for the sake of the demo to 
 
-#### a. Simple Diffusion
+#### a  Diffusion
 Fast image generation using Stable Diffusion with minimal steps.
 ```bash
-./scripts/run_demo.sh simple-diffusion --prompt "your prompt here"
+./scripts/run_demo.sh simple-diffusion --prompt "time annhilation" --steps 15
 ```
 
-#### b. Standard Diffusion
-Full-featured diffusion model for high-quality image generation.
-```bash
-./scripts/run_demo.sh diffusion
-```
+Note: This demo uses the ostris/Flex.2-preview model by default, which provides high-quality image generation.
 
 #### c. Multimodal Pipeline
 Advanced image generation with multimodal capabilities.
 ```bash
-./scripts/run_demo.sh generate --prompt "your prompt here"
+./scripts/run_demo.sh generate --prompt "fat tensor" 
 ```
 
 ## Demo Options
@@ -190,5 +151,5 @@ MIT License
 
 ## Contact
 
-- GitHub Issues: [Create an issue](https://github.com/yourusername/netarteryML/issues)
-- Email: your.email@example.com
+- GitHub Issues: [Create an issue](https://github.com/yourusername/netarterML/issues)
+- Email: daron94545@gmail.com
