@@ -1,11 +1,9 @@
 # NetArterML
-
-A comprehensive machine learning toolkit for medical imaging, vision, and language models.
-
+A cpu based arm64 simd machine learning inference library for diffusion, chat and vision trasnformers. No GPU required just arm based processors. optimized for apple m series chips at the moment linux is coming
 ## Version Information
 - Current Version: 0.1.0
 - Python Compatibility: 3.8 - 3.11
-- CUDA Compatibility: 11.7 - 12.1
+
 
 ## Features
 
