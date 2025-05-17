@@ -1,4 +1,4 @@
-# NetArterML
+# netarterML
 A cpu based arm64 simd machine learning inference library for diffusion, chat and vision trasnformers. No GPU required just arm based processors. optimized for apple m series chips at the moment linux is coming
 ## Version Information
 - Current Version: 0.1.0
