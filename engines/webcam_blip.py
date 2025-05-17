@@ -1,4 +1,22 @@
 #!/usr/bin/env python3
+"""
+Webcam BLIP Engine - Real-time image captioning using BLIP models
+
+This module provides:
+1. Real-time webcam feed processing
+2. Image captioning using BLIP models
+3. SIMD optimizations for faster processing
+4. Performance monitoring and FPS display
+5. Memory-efficient model loading
+
+Example usage:
+    # Initialize engine with BLIP model
+    engine = WebcamBlipEngine("Salesforce/blip-image-captioning-base", hf_token)
+    
+    # Run webcam feed with captioning
+    engine.run(device_id=0)  # Use default webcam
+"""
+
 import os
 import sys
 from pathlib import Path
@@ -25,6 +43,11 @@ from OPENtransformer.arm64_engine.core.asm.kernels.vision.vision_transformer_sim
 def validate_model_and_token(model_name: str, hf_token: str) -> bool:
     """
     Validate the model name and token before attempting to load.
+    
+    This function performs several checks:
+    1. Validates model name format
+    2. Validates token format and length
+    3. Ensures token starts with 'hf_'
     
     Args:
         model_name: Name of the model to validate
@@ -56,6 +79,12 @@ def validate_model_and_token(model_name: str, hf_token: str) -> bool:
 def check_and_download_model(model_name: str, hf_token: str) -> bool:
     """
     Check if model exists locally, if not download it.
+    
+    This function:
+    1. Attempts to load the model locally
+    2. Downloads if not found locally
+    3. Handles download errors gracefully
+    4. Provides helpful error messages
     
     Args:
         model_name: Name of the model to check/download
@@ -92,15 +121,53 @@ def check_and_download_model(model_name: str, hf_token: str) -> bool:
             return False
 
 def cleanup_memory():
-    """Clean up memory and cache"""
+    """
+    Clean up memory and cache.
+    
+    This function:
+    1. Clears CUDA cache if available
+    2. Runs garbage collection
+    3. Helps prevent memory leaks
+    """
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
     gc.collect()
 
 class WebcamBlipEngine:
+    """
+    Real-time webcam feed processing with BLIP image captioning.
+    
+    This class provides:
+    1. Real-time webcam feed capture
+    2. Image captioning using BLIP models
+    3. SIMD optimizations for faster processing
+    4. Performance monitoring and FPS display
+    5. Memory-efficient model loading
+    
+    Features:
+    - Multi-threaded caption generation
+    - SIMD-optimized image processing
+    - Real-time FPS display
+    - Memory management
+    - Error handling and recovery
+    
+    Example usage:
+        # Initialize engine
+        engine = WebcamBlipEngine("Salesforce/blip-image-captioning-base", hf_token)
+        
+        # Run webcam feed
+        engine.run(device_id=0)  # Use default webcam
+    """
+    
     def __init__(self, model_name: str, hf_token: str):
         """
         Initialize the webcam BLIP engine.
+        
+        This initializes:
+        1. BLIP model and processor
+        2. SIMD optimizations if available
+        3. Performance monitoring
+        4. Caption generation thread
         
         Args:
             model_name: Name of the BLIP model to use
@@ -157,7 +224,21 @@ class WebcamBlipEngine:
         self.caption_thread.start()
     
     def preprocess_frame(self, frame):
-        """Preprocess frame for model input"""
+        """
+        Preprocess frame for model input.
+        
+        This function:
+        1. Converts frame format
+        2. Applies SIMD optimizations if available
+        3. Normalizes image data
+        4. Extracts visual features
+        
+        Args:
+            frame: Input frame from webcam
+            
+        Returns:
+            Tuple of (processed image, visual features)
+        """
         if self.simd_kernels is not None:
             try:
                 # Convert BGR to RGB using SIMD
@@ -191,7 +272,20 @@ class WebcamBlipEngine:
         return pil_image, None
     
     def generate_caption(self, frame):
-        """Generate caption for the current frame"""
+        """
+        Generate caption for the current frame.
+        
+        This function:
+        1. Preprocesses the frame
+        2. Runs BLIP model inference
+        3. Generates descriptive caption
+        
+        Args:
+            frame: Input frame from webcam
+            
+        Returns:
+            Generated caption as string
+        """
         # Preprocess frame
         pil_image, features = self.preprocess_frame(frame)
         
@@ -211,7 +305,15 @@ class WebcamBlipEngine:
         return caption
     
     def _caption_generation_loop(self):
-        """Background thread for continuous caption generation"""
+        """
+        Background thread for continuous caption generation.
+        
+        This function:
+        1. Processes frames from the queue
+        2. Generates captions asynchronously
+        3. Updates the last caption
+        4. Handles errors gracefully
+        """
         while self.running:
             if not self.caption_queue.empty():
                 frame = self.caption_queue.get()
@@ -227,6 +329,12 @@ class WebcamBlipEngine:
     def run(self, device_id: int = 0):
         """
         Run the webcam BLIP engine.
+        
+        This function:
+        1. Opens webcam feed
+        2. Processes frames in real-time
+        3. Displays FPS and captions
+        4. Handles user input
         
         Args:
             device_id: Camera device ID (default: 0)
@@ -283,6 +391,11 @@ def run_webcam_blip(model_name: str, hf_token: str):
     """
     Run the webcam BLIP engine with the specified model.
     
+    This function:
+    1. Validates model and token
+    2. Checks/downloads model
+    3. Initializes and runs the engine
+    
     Args:
         model_name: Name of the BLIP model to use
         hf_token: HuggingFace token for authentication
@@ -297,6 +410,14 @@ def run_webcam_blip(model_name: str, hf_token: str):
     engine.run()
 
 def main():
+    """
+    Main entry point for the webcam BLIP engine.
+    
+    This function:
+    1. Sets up model configuration
+    2. Checks for required environment variables
+    3. Runs the webcam BLIP engine
+    """
     # ===== CONFIGURE YOUR MODEL HERE =====
     MODEL_NAME = "Salesforce/blip-image-captioning-base"
     HF_TOKEN = os.environ.get('HUGGINGFACE_TOKEN')

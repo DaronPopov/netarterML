@@ -1,12 +1,12 @@
-# Model files and downloads
-*.bin
+# Model files and downloaded content
 *.pt
 *.pth
+*.bin
 *.onnx
 *.safetensors
-temp_fp16_model/
 models/
-downloads/
+offload/
+simd_model/
 
 # Python
 __pycache__/
@@ -30,14 +30,10 @@ wheels/
 .installed.cfg
 *.egg
 
-# Environment
-.env
-.venv
-env/
+# Virtual Environment
 venv/
+env/
 ENV/
-env.bak/
-venv.bak/
 
 # IDE
 .idea/
@@ -47,4 +43,14 @@ venv.bak/
 
 # OS
 .DS_Store
-Thumbs.db 
+Thumbs.db
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+
+# Temporary files
+*.tmp
+*.temp
+.cache/ 
