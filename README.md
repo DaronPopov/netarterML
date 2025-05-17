@@ -144,8 +144,7 @@ Example:
 5. Create a Pull Request
 
 ## License
-
-MIT License
+no license yet 
 
 ## Contact
 
